@@ -10,6 +10,7 @@
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
     <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&family=Oswald:wght@500;600;700&display=swap" rel="stylesheet" />
     <link rel="stylesheet" href="styles.css" />
+    <link rel="stylesheet" href="modes.css" />
   </head>
   <body>
     <div class="grain"></div>
@@ -19,7 +20,8 @@
         <span>THE <b>LINE</b></span>
       </a>
       <nav aria-label="Main navigation">
-        <button class="nav-link active" type="button">Daily Run</button>
+        <button class="nav-link active" id="classic-mode" type="button">The 50 Line</button>
+        <button class="nav-link" id="triple-mode" type="button">Triple Take</button>
         <button class="nav-link" id="how-to-open" type="button">How to play</button>
       </nav>
       <div class="header-score"><span>RUN SCORE</span><strong id="header-score">0</strong></div>
@@ -32,7 +34,7 @@
             <p class="eyebrow">NBA STAT CHALLENGE</p>
             <h1>Walk the <em>50</em> line.</h1>
           </div>
-          <div class="round-count"><span>ROUND</span><strong id="round-number">01</strong><i>/05</i></div>
+          <div class="round-count"><span id="round-label">ROUND</span><strong id="round-number">01</strong><i id="round-total">/05</i></div>
         </div>
 
         <div class="progress-track" aria-label="Round progress">
@@ -43,8 +45,8 @@
           <div class="court-lines" aria-hidden="true"><span></span></div>
           <div class="challenge-copy">
             <p class="card-kicker">YOUR ASSIGNMENT</p>
-            <h2>Find the player closest to <span>#50</span><br />without going over.</h2>
-            <p class="challenge-note">Higher rank, higher score. Rank 51 or lower? That's a bust.</p>
+            <h2 id="challenge-title">Find the player closest to <span>#50</span><br />without going over.</h2>
+            <p class="challenge-note" id="challenge-note">Higher rank, higher score. Rank 51 or lower? That's a bust.</p>
           </div>
           <div class="stat-ticket">
             <div><span>SEASON</span><strong id="season">2023–24</strong></div>
@@ -55,8 +57,8 @@
 
         <section class="pick-panel">
           <div class="pick-heading">
-            <div><span class="step-num">01</span><div><p class="eyebrow">MAKE YOUR PICK</p><h3>Who lands nearest the line?</h3></div></div>
-            <div class="target-chip"><span class="target-dot"></span> TARGET: RANK 50</div>
+            <div><span class="step-num" id="pick-step">01</span><div><p class="eyebrow">MAKE YOUR PICK</p><h3 id="pick-prompt">Who lands nearest the line?</h3></div></div>
+            <div class="target-chip"><span class="target-dot"></span> <span id="target-copy">TARGET: RANK 50</span></div>
           </div>
 
           <div class="search-wrap">
@@ -73,7 +75,7 @@
           </div>
 
           <button id="lock-pick" class="primary-button" type="button" disabled><span>LOCK IN PICK</span><b>→</b></button>
-          <p class="microcopy">One shot. No stat peeking. Trust your hoops memory.</p>
+          <p class="microcopy" id="microcopy">One shot. No stat peeking. Trust your hoops memory.</p>
         </section>
 
         <section id="round-result" class="round-result hidden" aria-live="polite">
@@ -89,7 +91,7 @@
       <section id="summary-view" class="summary-view hidden">
         <p class="eyebrow">RUN COMPLETE</p>
         <h1>You walked the line.</h1>
-        <div class="final-score"><span>FINAL SCORE</span><strong id="final-score">0</strong><i>/250</i></div>
+        <div class="final-score"><span>FINAL SCORE</span><strong id="final-score">0</strong><i id="final-max">/250</i></div>
         <p id="final-verdict" class="final-verdict"></p>
         <div id="summary-rounds" class="summary-rounds"></div>
         <div class="summary-actions">
@@ -107,6 +109,7 @@
         <li><b>Read the assignment.</b><span>Each round gives you an NBA season and a totals category.</span></li>
         <li><b>Choose one player.</b><span>Pick the player you think finished closest to 50th in that category.</span></li>
         <li><b>Stay inside the line.</b><span>Ranks 1–50 score their rank. Rank 51+ scores zero.</span></li>
+        <li><b>Try Triple Take.</b><span>Use three revealed player ranks to total as close to 100 as possible without crossing it.</span></li>
       </ol>
       <button id="how-to-play" class="primary-button" type="button"><span>LET'S HOOP</span><b>→</b></button>
     </dialog>

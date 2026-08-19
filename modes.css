@@ -1,0 +1,46 @@
+.triple-mode .challenge-card {
+  background: linear-gradient(125deg, #e9f1dc, #d9e5cb);
+}
+
+.triple-mode .challenge-copy h2 span {
+  color: #4f741a;
+}
+
+.triple-mode .stat-ticket {
+  box-shadow: 8px 8px 0 var(--green);
+}
+
+.triple-mode .target-chip {
+  border-color: #52653a;
+}
+
+.triple-mode .progress-fill {
+  background: var(--green);
+}
+
+@media (max-width: 760px) {
+  .site-header nav {
+    display: flex;
+    gap: 14px;
+  }
+
+  .site-header nav #how-to-open {
+    display: none;
+  }
+
+  .site-header .nav-link {
+    font-size: 9px;
+    letter-spacing: .8px;
+  }
+}
+
+@media (max-width: 540px) {
+  .site-header {
+    gap: 12px;
+  }
+
+  .brand > span:last-child,
+  .header-score {
+    display: none;
+  }
+}
