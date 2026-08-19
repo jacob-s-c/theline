@@ -13,11 +13,30 @@ const categories = [
 const $ = (id) => document.getElementById(id);
 let mode = "classic", roundIndex = 0, selected = null, results = [], locked = false;
 let tripleChallenge = rounds[0];
+const SHOT_CLOCK_SECONDS = 24;
+let shotClockTimer = null, shotClockValue = SHOT_CLOCK_SECONDS;
 
 function initials(name){return name.split(/\s+/).map(x=>x[0]).slice(0,2).join("");}
-function allNames(){return [...new Map(rounds.flatMap(r=>r.players).map(p=>[p[0],p])).values()];}
 function playerMeta(player){return [player[1],player[2]].filter(Boolean).join(" • ");}
 function currentChallenge(){return mode==="triple"?tripleChallenge:rounds[roundIndex];}
+
+function clearShotClock(){
+  if(shotClockTimer){clearInterval(shotClockTimer);shotClockTimer=null;}
+}
+function updateShotClockUI(){
+  $("shot-clock").textContent=String(Math.max(shotClockValue,0)).padStart(2,"0");
+  $("shot-clock").classList.toggle("urgent",shotClockValue<=5);
+}
+function startShotClock(){
+  clearShotClock();
+  shotClockValue=SHOT_CLOCK_SECONDS;
+  updateShotClockUI();
+  shotClockTimer=setInterval(()=>{
+    shotClockValue--;
+    updateShotClockUI();
+    if(shotClockValue<=0)resolvePick(true);
+  },1000);
+}
 
 function renderRound(){
   const round=currentChallenge(); selected=null; locked=false;
@@ -37,14 +56,16 @@ function renderRound(){
     $("microcopy").textContent="Every revealed rank is a clue. Recalibrate and make the next pick count.";
   }else{
     $("challenge-title").innerHTML=`Find the player closest to <span>#50</span><br />without going over.`;
-    $("challenge-note").textContent="Higher rank, higher score. Rank 51 or lower? That's a bust.";
+    $("challenge-note").textContent=mode==="shotclock"?"Higher rank, higher score. Rank 51 or lower? That's a bust. Beat the clock.":"Higher rank, higher score. Rank 51 or lower? That's a bust.";
     $("pick-prompt").textContent="Who lands nearest the line?";
     $("target-copy").textContent="TARGET: RANK 50";
-    $("microcopy").textContent="One shot. No stat peeking. Trust your hoops memory.";
+    $("microcopy").textContent=mode==="shotclock"?"24 seconds a pick. No stat peeking. Trust your hoops memory.":"One shot. No stat peeking. Trust your hoops memory.";
   }
   $("player-search").value=""; $("player-search").disabled=false;
   $("selected-player").classList.add("hidden"); $("round-result").classList.add("hidden");
   $("lock-pick").classList.remove("hidden"); $("lock-pick").disabled=true;
+  $("shot-clock").classList.toggle("hidden",mode!=="shotclock");
+  if(mode==="shotclock")startShotClock(); else clearShotClock();
   renderScoreRow();
 }
 
@@ -56,34 +77,36 @@ function renderOptions(query=""){
     return;
   }
   const picked=new Set(results.map(r=>r.player));
-  const pool=currentChallenge().players.filter(p=>p[0].toLowerCase().includes(spelling)&&!picked.has(p[0])).slice(0,8);
+  const pool=currentChallenge().roster.filter(p=>p[0].toLowerCase().includes(spelling)&&!picked.has(p[0])).slice(0,8);
   $("player-options").innerHTML=pool.map(p=>`<button class="player-option" role="option" data-name="${p[0]}"><span class="mini-mono">${initials(p[0])}</span><strong>${p[0]}</strong><span>${playerMeta(p)}</span></button>`).join("");
   $("player-options").classList.toggle("open",pool.length>0);
 }
 
 function choosePlayer(name){
   const challenge=currentChallenge();
-  const generic=allNames().find(p=>p[0]===name); selected=challenge.players.find(p=>p[0]===name) || generic;
+  selected=challenge.players.find(p=>p[0]===name) || challenge.roster.find(p=>p[0]===name);
   $("player-search").value=""; $("player-options").classList.remove("open");
   $("player-monogram").textContent=initials(selected[0]); $("player-name").textContent=selected[0];
   $("player-team").textContent=playerMeta(selected);
   $("selected-player").classList.remove("hidden"); $("lock-pick").disabled=false;
 }
 
-function lockPick(){
-  if(!selected||locked)return; locked=true;
+function resolvePick(timedOut=false){
+  const noPick=timedOut&&!selected;
+  if((!selected&&!noPick)||locked)return; locked=true;
+  clearShotClock();
   const challenge=currentChallenge();
-  const exact=challenge.players.find(p=>p[0]===selected[0]);
-  const rank=exact ? exact[3] : 51 + ((initials(selected[0]).charCodeAt(0)+roundIndex*17)%73);
-  const points=mode==="triple"?rank:(rank<=50?rank:0); results.push({round:challenge,player:selected[0],rank,points});
+  const exact=noPick?null:challenge.players.find(p=>p[0]===selected[0]);
+  const rank=noPick?(mode==="triple"?0:999):(exact ? exact[3] : 51 + ((initials(selected[0]).charCodeAt(0)+roundIndex*17)%73));
+  const points=mode==="triple"?rank:(rank<=50?rank:0); results.push({round:challenge,player:noPick?null:selected[0],rank,points});
   const running=results.reduce((n,r)=>n+r.rank,0);
   $("header-score").textContent=mode==="triple"?Math.min(running,100):results.reduce((n,r)=>n+r.points,0);
-  $("result-rank").textContent=`#${rank}`; $("result-points").textContent=mode==="triple"?`${running}/100`:(points?`+${points}`:"0");
-  const distance=Math.abs(50-rank), bust=mode==="triple"?running>100:rank>50;
+  $("result-rank").textContent=noPick?"—":`#${rank}`; $("result-points").textContent=mode==="triple"?`${running}/100`:(points?`+${points}`:"0");
+  const distance=Math.abs(50-rank), bust=mode==="triple"?running>100:(noPick||rank>50);
   $("round-result").classList.toggle("bust",bust);
-  $("result-label").textContent=bust?"BUSTED":mode==="triple"?(running===100?"PERFECT TOTAL":"RANK REVEALED"):(rank===50?"PERFECT PICK":distance<=4?"SO CLOSE":"ON THE BOARD");
-  $("result-title").textContent=bust?"You crossed the line.":mode==="triple"?(running===100?"You hit 100 exactly.":`${100-running} points still on the board.`):(rank===50?"Right on the fifty.":`${distance} spot${distance===1?"":"s"} from perfection.`);
-  $("result-detail").textContent=`${selected[0]} • ${challenge.season} ${challenge.category.toLowerCase()}`;
+  $("result-label").textContent=noPick?"SHOT CLOCK VIOLATION":bust?"BUSTED":mode==="triple"?(running===100?"PERFECT TOTAL":"RANK REVEALED"):(rank===50?"PERFECT PICK":distance<=4?"SO CLOSE":"ON THE BOARD");
+  $("result-title").textContent=noPick?"Time expired before you locked a pick.":bust?"You crossed the line.":mode==="triple"?(running===100?"You hit 100 exactly.":`${100-running} points still on the board.`):(rank===50?"Right on the fifty.":`${distance} spot${distance===1?"":"s"} from perfection.`);
+  $("result-detail").textContent=noPick?`${challenge.season} ${challenge.category.toLowerCase()}`:`${selected[0]} • ${challenge.season} ${challenge.category.toLowerCase()}`;
   const isLast=mode==="triple"?(roundIndex===2||bust||running===100):roundIndex===rounds.length-1;
   $("next-round").querySelector("span").textContent=isLast?"SEE RESULTS":(mode==="triple"?"NEXT PICK":"NEXT ROUND");
   $("next-round").dataset.finish=String(isLast);
@@ -122,7 +145,10 @@ function restart(){roundIndex=0;results=[];currentRunSaved=false;$("header-score
 function setMode(next){
   mode=next;
   document.body.classList.toggle("triple-mode",mode==="triple");
-  $("classic-mode").classList.toggle("active",mode==="classic"); $("triple-mode").classList.toggle("active",mode==="triple");
+  document.body.classList.toggle("shotclock-mode",mode==="shotclock");
+  $("classic-mode").classList.toggle("active",mode==="classic");
+  $("triple-mode").classList.toggle("active",mode==="triple");
+  $("shotclock-mode").classList.toggle("active",mode==="shotclock");
   if(rounds.length){tripleChallenge=rounds[Math.floor(Math.random()*rounds.length)];restart();}
 }
 function toast(msg){$("toast").textContent=msg;$("toast").classList.add("show");setTimeout(()=>$("toast").classList.remove("show"),1800);}
@@ -130,11 +156,12 @@ function toast(msg){$("toast").textContent=msg;$("toast").classList.add("show");
 $("player-search").addEventListener("input",e=>renderOptions(e.target.value));
 $("player-options").addEventListener("click",e=>{const btn=e.target.closest("[data-name]");if(btn)choosePlayer(btn.dataset.name)});
 $("clear-player").addEventListener("click",()=>{selected=null;$("selected-player").classList.add("hidden");$("lock-pick").disabled=true;$("player-search").focus()});
-$("lock-pick").addEventListener("click",lockPick); $("next-round").addEventListener("click",nextRound);
+$("lock-pick").addEventListener("click",()=>resolvePick(false)); $("next-round").addEventListener("click",nextRound);
 $("play-again").addEventListener("click",restart);
-$("share-score").addEventListener("click",async()=>{const raw=results.reduce((n,r)=>n+(mode==="triple"?r.rank:r.points),0),score=mode==="triple"&&raw>100?0:raw,max=mode==="triple"?100:250;const text=`I scored ${score}/${max} on ${mode==="triple"?"Triple Take":"The 50 Line"} 🏀`;try{await navigator.clipboard.writeText(text);toast("SCORE COPIED TO CLIPBOARD")}catch{toast(text)}});
+$("share-score").addEventListener("click",async()=>{const raw=results.reduce((n,r)=>n+(mode==="triple"?r.rank:r.points),0),score=mode==="triple"&&raw>100?0:raw,max=mode==="triple"?100:250;const modeName=mode==="triple"?"Triple Take":mode==="shotclock"?"Shot Clock":"The 50 Line";const text=`I scored ${score}/${max} on ${modeName} 🏀`;try{await navigator.clipboard.writeText(text);toast("SCORE COPIED TO CLIPBOARD")}catch{toast(text)}});
 $("classic-mode").addEventListener("click",()=>setMode("classic"));
 $("triple-mode").addEventListener("click",()=>setMode("triple"));
+$("shotclock-mode").addEventListener("click",()=>setMode("shotclock"));
 $("how-to-open").addEventListener("click",()=>$("how-to-modal").showModal());
 $("how-to-close").addEventListener("click",()=>$("how-to-modal").close());
 $("how-to-play").addEventListener("click",()=>$("how-to-modal").close());
@@ -146,13 +173,18 @@ function shuffle(items){
 function makeBoard(season,category){
   const [key,label]=category;
   const ranked=season.players.filter(player=>Number.isFinite(player.stats[key])).sort((a,b)=>b.stats[key]-a.stats[key]||a.name.localeCompare(b.name));
-  return {season:season.season,category:label,players:ranked.map((player,index)=>[player.name,player.team,"",index+1])};
+  return {
+    season:season.season,
+    category:label,
+    players:ranked.map((player,index)=>[player.name,player.team,"",index+1]),
+    roster:season.players.map(player=>[player.name,player.team,"",null])
+  };
 }
 async function startDecade(decade){
   chosenDecade=decade;
-  const available=manifest.filter(item=>Math.floor(item.startYear/10)*10===decade);
+  const available=manifest.filter(item=>item.hasData&&Math.floor(item.startYear/10)*10===decade);
   const pairs=[];
-  while(pairs.length<5){
+  while(pairs.length<8){
     const season=available[Math.floor(Math.random()*available.length)];
     const category=categories[Math.floor(Math.random()*categories.length)];
     if(!pairs.some(pair=>pair.season.file===season.file&&pair.category[0]===category[0]))pairs.push({season,category});
@@ -167,13 +199,15 @@ async function startDecade(decade){
   }catch(error){console.error("Unable to build run",error);toast("COULD NOT LOAD NBA DATA");renderDecades();}
 }
 function renderDecades(){
-  const decades=[...new Set(manifest.map(item=>Math.floor(item.startYear/10)*10))];
+  const playable=manifest.filter(item=>item.hasData);
+  const decades=[...new Set(playable.map(item=>Math.floor(item.startYear/10)*10))];
   $("decade-options").innerHTML=decades.map(decade=>{
-    const seasons=manifest.filter(item=>Math.floor(item.startYear/10)*10===decade);
+    const seasons=playable.filter(item=>Math.floor(item.startYear/10)*10===decade);
     return `<button class="decade-button" data-decade="${decade}"><strong>${decade}s</strong><span>${seasons[0].season} — ${seasons.at(-1).season}</span></button>`;
   }).join("");
 }
 function showSetup(){
+  clearShotClock();
   rounds=[];results=[];roundIndex=0;$("header-score").textContent="0";
   $("game-view").classList.add("hidden");$("summary-view").classList.add("hidden");$("setup-view").classList.remove("hidden");renderDecades();
 }
@@ -192,4 +226,5 @@ async function loadData(){
 }
 $("decade-options").addEventListener("click",event=>{const button=event.target.closest("[data-decade]");if(button)startDecade(Number(button.dataset.decade))});
 $("change-decade").addEventListener("click",showSetup);
+$("brand-home").addEventListener("click",e=>{e.preventDefault();showSetup();});
 loadData();

@@ -3,232 +3,278 @@
     {
       "season": "1980\u201381",
       "startYear": 1980,
-      "file": "1980-81.json"
+      "file": "1980-81.json",
+      "hasData": false
     },
     {
       "season": "1981\u201382",
       "startYear": 1981,
-      "file": "1981-82.json"
+      "file": "1981-82.json",
+      "hasData": false
     },
     {
       "season": "1982\u201383",
       "startYear": 1982,
-      "file": "1982-83.json"
+      "file": "1982-83.json",
+      "hasData": false
     },
     {
       "season": "1983\u201384",
       "startYear": 1983,
-      "file": "1983-84.json"
+      "file": "1983-84.json",
+      "hasData": false
     },
     {
       "season": "1984\u201385",
       "startYear": 1984,
-      "file": "1984-85.json"
+      "file": "1984-85.json",
+      "hasData": false
     },
     {
       "season": "1985\u201386",
       "startYear": 1985,
-      "file": "1985-86.json"
+      "file": "1985-86.json",
+      "hasData": false
     },
     {
       "season": "1986\u201387",
       "startYear": 1986,
-      "file": "1986-87.json"
+      "file": "1986-87.json",
+      "hasData": false
     },
     {
       "season": "1987\u201388",
       "startYear": 1987,
-      "file": "1987-88.json"
+      "file": "1987-88.json",
+      "hasData": false
     },
     {
       "season": "1988\u201389",
       "startYear": 1988,
-      "file": "1988-89.json"
+      "file": "1988-89.json",
+      "hasData": false
     },
     {
       "season": "1989\u201390",
       "startYear": 1989,
-      "file": "1989-90.json"
+      "file": "1989-90.json",
+      "hasData": false
     },
     {
       "season": "1990\u201391",
       "startYear": 1990,
-      "file": "1990-91.json"
+      "file": "1990-91.json",
+      "hasData": false
     },
     {
       "season": "1991\u201392",
       "startYear": 1991,
-      "file": "1991-92.json"
+      "file": "1991-92.json",
+      "hasData": false
     },
     {
       "season": "1992\u201393",
       "startYear": 1992,
-      "file": "1992-93.json"
+      "file": "1992-93.json",
+      "hasData": false
     },
     {
       "season": "1993\u201394",
       "startYear": 1993,
-      "file": "1993-94.json"
+      "file": "1993-94.json",
+      "hasData": false
     },
     {
       "season": "1994\u201395",
       "startYear": 1994,
-      "file": "1994-95.json"
+      "file": "1994-95.json",
+      "hasData": false
     },
     {
       "season": "1995\u201396",
       "startYear": 1995,
-      "file": "1995-96.json"
+      "file": "1995-96.json",
+      "hasData": false
     },
     {
       "season": "1996\u201397",
       "startYear": 1996,
-      "file": "1996-97.json"
+      "file": "1996-97.json",
+      "hasData": true
     },
     {
       "season": "1997\u201398",
       "startYear": 1997,
-      "file": "1997-98.json"
+      "file": "1997-98.json",
+      "hasData": true
     },
     {
       "season": "1998\u201399",
       "startYear": 1998,
-      "file": "1998-99.json"
+      "file": "1998-99.json",
+      "hasData": true
     },
     {
       "season": "1999\u201300",
       "startYear": 1999,
-      "file": "1999-00.json"
+      "file": "1999-00.json",
+      "hasData": true
     },
     {
       "season": "2000\u201301",
       "startYear": 2000,
-      "file": "2000-01.json"
+      "file": "2000-01.json",
+      "hasData": true
     },
     {
       "season": "2001\u201302",
       "startYear": 2001,
-      "file": "2001-02.json"
+      "file": "2001-02.json",
+      "hasData": true
     },
     {
       "season": "2002\u201303",
       "startYear": 2002,
-      "file": "2002-03.json"
+      "file": "2002-03.json",
+      "hasData": true
     },
     {
       "season": "2003\u201304",
       "startYear": 2003,
-      "file": "2003-04.json"
+      "file": "2003-04.json",
+      "hasData": true
     },
     {
       "season": "2004\u201305",
       "startYear": 2004,
-      "file": "2004-05.json"
+      "file": "2004-05.json",
+      "hasData": true
     },
     {
       "season": "2005\u201306",
       "startYear": 2005,
-      "file": "2005-06.json"
+      "file": "2005-06.json",
+      "hasData": true
     },
     {
       "season": "2006\u201307",
       "startYear": 2006,
-      "file": "2006-07.json"
+      "file": "2006-07.json",
+      "hasData": true
     },
     {
       "season": "2007\u201308",
       "startYear": 2007,
-      "file": "2007-08.json"
+      "file": "2007-08.json",
+      "hasData": true
     },
     {
       "season": "2008\u201309",
       "startYear": 2008,
-      "file": "2008-09.json"
+      "file": "2008-09.json",
+      "hasData": true
     },
     {
       "season": "2009\u201310",
       "startYear": 2009,
-      "file": "2009-10.json"
+      "file": "2009-10.json",
+      "hasData": true
     },
     {
       "season": "2010\u201311",
       "startYear": 2010,
-      "file": "2010-11.json"
+      "file": "2010-11.json",
+      "hasData": true
     },
     {
       "season": "2011\u201312",
       "startYear": 2011,
-      "file": "2011-12.json"
+      "file": "2011-12.json",
+      "hasData": true
     },
     {
       "season": "2012\u201313",
       "startYear": 2012,
-      "file": "2012-13.json"
+      "file": "2012-13.json",
+      "hasData": true
     },
     {
       "season": "2013\u201314",
       "startYear": 2013,
-      "file": "2013-14.json"
+      "file": "2013-14.json",
+      "hasData": true
     },
     {
       "season": "2014\u201315",
       "startYear": 2014,
-      "file": "2014-15.json"
+      "file": "2014-15.json",
+      "hasData": true
     },
     {
       "season": "2015\u201316",
       "startYear": 2015,
-      "file": "2015-16.json"
+      "file": "2015-16.json",
+      "hasData": true
     },
     {
       "season": "2016\u201317",
       "startYear": 2016,
-      "file": "2016-17.json"
+      "file": "2016-17.json",
+      "hasData": true
     },
     {
       "season": "2017\u201318",
       "startYear": 2017,
-      "file": "2017-18.json"
+      "file": "2017-18.json",
+      "hasData": true
     },
     {
       "season": "2018\u201319",
       "startYear": 2018,
-      "file": "2018-19.json"
+      "file": "2018-19.json",
+      "hasData": true
     },
     {
       "season": "2019\u201320",
       "startYear": 2019,
-      "file": "2019-20.json"
+      "file": "2019-20.json",
+      "hasData": true
     },
     {
       "season": "2020\u201321",
       "startYear": 2020,
-      "file": "2020-21.json"
+      "file": "2020-21.json",
+      "hasData": true
     },
     {
       "season": "2021\u201322",
       "startYear": 2021,
-      "file": "2021-22.json"
+      "file": "2021-22.json",
+      "hasData": true
     },
     {
       "season": "2022\u201323",
       "startYear": 2022,
-      "file": "2022-23.json"
+      "file": "2022-23.json",
+      "hasData": true
     },
     {
       "season": "2023\u201324",
       "startYear": 2023,
-      "file": "2023-24.json"
+      "file": "2023-24.json",
+      "hasData": true
     },
     {
       "season": "2024\u201325",
       "startYear": 2024,
-      "file": "2024-25.json"
+      "file": "2024-25.json",
+      "hasData": true
     },
     {
       "season": "2025\u201326",
       "startYear": 2025,
-      "file": "2025-26.json"
+      "file": "2025-26.json",
+      "hasData": true
     }
   ]
 }

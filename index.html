@@ -18,13 +18,14 @@
   <body>
     <div class="grain"></div>
     <header class="site-header">
-      <a class="brand" href="#" aria-label="The 50 Line home">
+      <a class="brand" href="#" id="brand-home" aria-label="The 50 Line home">
         <span class="brand-ball">50</span>
         <span>THE <b>LINE</b></span>
       </a>
       <nav aria-label="Main navigation">
         <button class="nav-link active" id="classic-mode" type="button">The 50 Line</button>
         <button class="nav-link" id="triple-mode" type="button">Triple Take</button>
+        <button class="nav-link" id="shotclock-mode" type="button">Shot Clock</button>
         <button class="nav-link" id="leaderboard-open" type="button">Leaderboard</button>
         <button class="nav-link" id="how-to-open" type="button">How to play</button>
       </nav>
@@ -50,7 +51,7 @@
       <section id="setup-view" class="setup-view">
         <p class="eyebrow">CHOOSE YOUR ERA</p>
         <h1>What decade<br />do you know?</h1>
-        <p class="setup-intro">Your five-round run will pull random seasons and stat categories from the decade you choose.</p>
+        <p class="setup-intro">Your eight-round run will pull random seasons and stat categories from the decade you choose.</p>
         <div id="decade-options" class="decade-options" aria-label="Choose a decade"></div>
         <div class="category-list">
           <span>22 POSSIBLE CATEGORIES</span>
@@ -87,7 +88,10 @@
         <section class="pick-panel">
           <div class="pick-heading">
             <div><span class="step-num" id="pick-step">01</span><div><p class="eyebrow">MAKE YOUR PICK</p><h3 id="pick-prompt">Who lands nearest the line?</h3></div></div>
-            <div class="target-chip"><span class="target-dot"></span> <span id="target-copy">TARGET: RANK 50</span></div>
+            <div class="pick-heading-chips">
+              <div class="target-chip"><span class="target-dot"></span> <span id="target-copy">TARGET: RANK 50</span></div>
+              <div class="shot-clock hidden" id="shot-clock" aria-label="Shot clock seconds remaining">24</div>
+            </div>
           </div>
 
           <div class="search-wrap">
@@ -136,11 +140,12 @@
       <p class="eyebrow">THE RULES</p>
       <h2>Get close. Don't cross.</h2>
       <ol>
-        <li><b>Choose your decade.</b><span>Every season in your five-round run comes from the era you select.</span></li>
+        <li><b>Choose your decade.</b><span>Every season in your eight-round run comes from the era you select.</span></li>
         <li><b>Read the assignment.</b><span>Each round gives you an NBA season and a totals category.</span></li>
         <li><b>Choose one player.</b><span>Pick the player you think finished closest to 50th in that category.</span></li>
         <li><b>Stay inside the line.</b><span>Ranks 1–50 score their rank. Rank 51+ scores zero.</span></li>
         <li><b>Try Triple Take.</b><span>Use three revealed player ranks to total as close to 100 as possible without crossing it.</span></li>
+        <li><b>Or beat the clock.</b><span>Shot Clock mode gives you 24 seconds per pick. Let it hit zero and it's an automatic miss.</span></li>
       </ol>
       <button id="how-to-play" class="primary-button" type="button"><span>LET'S HOOP</span><b>→</b></button>
     </dialog>
