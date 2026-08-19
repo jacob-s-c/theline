@@ -130,8 +130,8 @@ function showSummary(){
   $("game-view").classList.add("hidden"); $("summary-view").classList.remove("hidden");
   const rankTotal=results.reduce((n,r)=>n+r.rank,0), tripleBust=mode==="triple"&&rankTotal>100;
   const total=mode==="triple"?(tripleBust?0:rankTotal):results.reduce((n,r)=>n+r.points,0); $("final-score").textContent=total;
-  $("final-max").textContent=mode==="triple"?"/100":"/250";
-  $("final-verdict").textContent=mode==="triple"?(tripleBust?`Your picks totaled ${rankTotal}. You crossed the line.`:total===100?"Perfect. Three picks, 100 on the nose.":`${100-total} points shy of the target. Run it back with what you learned.`):(total>=220?"Elite hoops recall. You practically live at the scorer's table.":total>=150?"A strong run — you know the league, and you respect the line.":total>=75?"Solid instincts. A few deep cuts caught you reaching.":"The line got you today. Film room, then run it back.");
+  $("final-max").textContent=mode==="triple"?"/100":`/${rounds.length*50}`;
+  $("final-verdict").textContent=mode==="triple"?(tripleBust?`Your picks totaled ${rankTotal}. You crossed the line.`:total===100?"Perfect. Three picks, 100 on the nose.":`${100-total} points shy of the target. Run it back with what you learned.`):(total>=350?"Elite hoops recall. You practically live at the scorer's table.":total>=240?"A strong run — you know the league, and you respect the line.":total>=120?"Solid instincts. A few deep cuts caught you reaching.":"The line got you today. Film room, then run it back.");
   $("summary-rounds").style.gridTemplateColumns=`repeat(${results.length},1fr)`;
   $("summary-rounds").innerHTML=results.map((r,i)=>`<div class="summary-round"><span>${mode==="triple"?"PICK":"ROUND"} ${i+1}</span><strong>${mode==="triple"?`#${r.rank}`:r.points}</strong><small>${r.player}<br>${r.round.category}</small></div>`).join("");
   if(!currentRunSaved){
@@ -158,7 +158,7 @@ $("player-options").addEventListener("click",e=>{const btn=e.target.closest("[da
 $("clear-player").addEventListener("click",()=>{selected=null;$("selected-player").classList.add("hidden");$("lock-pick").disabled=true;$("player-search").focus()});
 $("lock-pick").addEventListener("click",()=>resolvePick(false)); $("next-round").addEventListener("click",nextRound);
 $("play-again").addEventListener("click",restart);
-$("share-score").addEventListener("click",async()=>{const raw=results.reduce((n,r)=>n+(mode==="triple"?r.rank:r.points),0),score=mode==="triple"&&raw>100?0:raw,max=mode==="triple"?100:250;const modeName=mode==="triple"?"Triple Take":mode==="shotclock"?"Shot Clock":"The 50 Line";const text=`I scored ${score}/${max} on ${modeName} 🏀`;try{await navigator.clipboard.writeText(text);toast("SCORE COPIED TO CLIPBOARD")}catch{toast(text)}});
+$("share-score").addEventListener("click",async()=>{const raw=results.reduce((n,r)=>n+(mode==="triple"?r.rank:r.points),0),score=mode==="triple"&&raw>100?0:raw,max=mode==="triple"?100:rounds.length*50;const modeName=mode==="triple"?"Triple Take":mode==="shotclock"?"Shot Clock":"The 50 Line";const text=`I scored ${score}/${max} on ${modeName} 🏀`;try{await navigator.clipboard.writeText(text);toast("SCORE COPIED TO CLIPBOARD")}catch{toast(text)}});
 $("classic-mode").addEventListener("click",()=>setMode("classic"));
 $("triple-mode").addEventListener("click",()=>setMode("triple"));
 $("shotclock-mode").addEventListener("click",()=>setMode("shotclock"));

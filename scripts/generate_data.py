@@ -5,7 +5,7 @@ import time
 from datetime import date
 from pathlib import Path
 
-from nba_api.stats.endpoints import leaguedashplayerstats
+from nba_api.stats.endpoints import leaguedashplayerstats, leagueleaders
 
 FIRST_SEASON = 1980
 LAST_SEASON = date.today().year if date.today().month >= 10 else date.today().year - 1
@@ -40,6 +40,19 @@ def fetch_season(start: int) -> dict:
         timeout=90,
     )
     frame = response.get_data_frames()[0]
+    name_column, team_column = "PLAYER_NAME", "TEAM_ABBREVIATION"
+    if frame.empty:
+        # LeagueDashPlayerStats begins in 1996-97, while LeagueLeaders exposes
+        # the same traditional totals for older NBA.com seasons.
+        response = leagueleaders.LeagueLeaders(
+            season=season,
+            season_type_all_star="Regular Season",
+            per_mode48="Totals",
+            stat_category_abbreviation="PTS",
+            timeout=90,
+        )
+        frame = response.get_data_frames()[0]
+        name_column, team_column = "PLAYER", "TEAM"
     players = []
     for _, row in frame.iterrows():
         stats = {column: number(row.get(column)) for column in SOURCE_COLUMNS}
@@ -48,7 +61,7 @@ def fetch_season(start: int) -> dict:
         stats["EFF"] = sum(stats[key] or 0 for key in ("PTS", "REB", "AST", "STL", "BLK")) - missed_fg - missed_ft - (stats["TOV"] or 0)
         stats["AST_TO"] = round(stats["AST"] / stats["TOV"], 4) if stats["TOV"] else None
         stats["STL_TOV"] = round(stats["STL"] / stats["TOV"], 4) if stats["TOV"] else None
-        players.append({"name": row["PLAYER_NAME"], "team": row["TEAM_ABBREVIATION"], "stats": stats})
+        players.append({"name": row[name_column], "team": row[team_column], "stats": stats})
     return {"season": season.replace("-", "–"), "startYear": start, "players": players}
 
 
@@ -61,7 +74,7 @@ def main() -> None:
         print(f"Fetching {season_id(start)}...", flush=True)
         payload = fetch_season(start)
         if not payload["players"]:
-            print(f"  no data returned for {season_id(start)} (stats.nba.com has no totals before 1996-97)", flush=True)
+            print(f"  no data returned for {season_id(start)}", flush=True)
         destination.write_text(json.dumps(payload, separators=(",", ":")) + "\n", encoding="utf-8")
         manifest.append({
             "season": payload["season"],
