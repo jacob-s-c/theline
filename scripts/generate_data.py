@@ -7,7 +7,7 @@ from pathlib import Path
 
 from nba_api.stats.endpoints import leaguedashplayerstats
 
-FIRST_SEASON = 1979
+FIRST_SEASON = 1980
 LAST_SEASON = date.today().year if date.today().month >= 10 else date.today().year - 1
 OUTPUT = Path(__file__).resolve().parents[1] / "data"
 SOURCE_COLUMNS = [

@@ -1,11 +1,6 @@
 {
   "seasons": [
     {
-      "season": "1979\u201380",
-      "startYear": 1979,
-      "file": "1979-80.json"
-    },
-    {
       "season": "1980\u201381",
       "startYear": 1980,
       "file": "1980-81.json"

@@ -21,7 +21,7 @@ Then visit <http://localhost:4173>.
 
 ## Data
 
-The game uses compact season JSON generated from NBA.com through the open-source `nba_api` client. It includes every regular season from 1979–80 forward and all 22 supported categories. This keeps the deployed game fast and avoids making fragile NBA.com requests from players' browsers.
+The game uses compact season JSON generated from NBA.com through the open-source `nba_api` client. It includes every regular season from 1980–81 forward and all 22 supported categories. This keeps the deployed game fast and avoids making fragile NBA.com requests from players' browsers.
 
 To refresh the data:
 
