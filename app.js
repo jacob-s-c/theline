@@ -13,6 +13,7 @@ const categories = [
 const $ = (id) => document.getElementById(id);
 let mode = "classic", roundIndex = 0, selected = null, results = [], locked = false;
 let tripleChallenge = rounds[0];
+let chaosChoices = [];
 const SHOT_CLOCK_SECONDS = 24;
 let shotClockTimer = null, shotClockValue = SHOT_CLOCK_SECONDS;
 
@@ -54,6 +55,12 @@ function renderRound(){
     $("pick-prompt").textContent=`Pick ${roundIndex+1}: who adds the right rank?`;
     $("target-copy").textContent=`${remaining} RANK POINTS LEFT`;
     $("microcopy").textContent="Every revealed rank is a clue. Recalibrate and make the next pick count.";
+  }else if(mode==="chaos"){
+    $("challenge-title").innerHTML=`Six players. One safe path<br />to <span>#50</span>.`;
+    $("challenge-note").textContent="Three are inside the line. Three are busts. Pick the closest safe rank.";
+    $("pick-prompt").textContent="Which player survives the chaos?";
+    $("target-copy").textContent="3 SAFE • 3 BUSTS";
+    $("microcopy").textContent="The ranks are hidden until you lock your pick. Choose wisely.";
   }else{
     $("challenge-title").innerHTML=`Find the player closest to <span>#50</span><br />without going over.`;
     $("challenge-note").textContent=mode==="shotclock"?"Higher rank, higher score. Rank 51 or lower? That's a bust. Beat the clock.":"Higher rank, higher score. Rank 51 or lower? That's a bust.";
@@ -65,8 +72,19 @@ function renderRound(){
   $("selected-player").classList.add("hidden"); $("round-result").classList.add("hidden");
   $("lock-pick").classList.remove("hidden"); $("lock-pick").disabled=true;
   $("shot-clock").classList.toggle("hidden",mode!=="shotclock");
+  $("search-wrap").classList.toggle("hidden",mode==="chaos");
+  $("chaos-options").classList.toggle("hidden",mode!=="chaos");
+  if(mode==="chaos")renderChaosChoices(round);
   if(mode==="shotclock")startShotClock(); else clearShotClock();
   renderScoreRow();
+}
+
+function renderChaosChoices(round){
+  const safe=shuffle(round.players.filter(player=>player[3]<=50)).slice(0,3);
+  const busts=shuffle(round.players.filter(player=>player[3]>50)).slice(0,3);
+  chaosChoices=shuffle([...safe,...busts]);
+  $("chaos-options").classList.remove("chaos-reveal");
+  $("chaos-options").innerHTML=chaosChoices.map((player,index)=>`<button class="chaos-card" type="button" role="option" data-chaos-index="${index}"><span class="mini-mono">${initials(player[0])}</span><span class="chaos-card-copy"><strong>${player[0]}</strong><span>${playerMeta(player)}</span><b class="chaos-rank"></b></span></button>`).join("");
 }
 
 function renderOptions(query=""){
@@ -89,6 +107,7 @@ function choosePlayer(name){
   $("player-monogram").textContent=initials(selected[0]); $("player-name").textContent=selected[0];
   $("player-team").textContent=playerMeta(selected);
   $("selected-player").classList.remove("hidden"); $("lock-pick").disabled=false;
+  $("chaos-options").querySelectorAll(".chaos-card").forEach((card,index)=>card.classList.toggle("selected",chaosChoices[index]?.[0]===name));
 }
 
 function resolvePick(timedOut=false){
@@ -103,6 +122,15 @@ function resolvePick(timedOut=false){
   $("header-score").textContent=mode==="triple"?Math.min(running,100):results.reduce((n,r)=>n+r.points,0);
   $("result-rank").textContent=noPick?"—":`#${rank}`; $("result-points").textContent=mode==="triple"?`${running}/100`:(points?`+${points}`:"0");
   const distance=Math.abs(50-rank), bust=mode==="triple"?running>100:(noPick||rank>50);
+  if(mode==="chaos"){
+    $("chaos-options").classList.add("chaos-reveal");
+    $("chaos-options").querySelectorAll(".chaos-card").forEach((card,index)=>{
+      const choice=chaosChoices[index];
+      card.querySelector(".chaos-rank").textContent=`RANK #${choice[3]}`;
+      card.classList.toggle("correct",choice[3]<=50&&choice[3]===Math.max(...chaosChoices.filter(p=>p[3]<=50).map(p=>p[3])));
+      card.classList.toggle("busted",choice[3]>50);
+    });
+  }
   $("round-result").classList.toggle("bust",bust);
   $("result-label").textContent=noPick?"SHOT CLOCK VIOLATION":bust?"BUSTED":mode==="triple"?(running===100?"PERFECT TOTAL":"RANK REVEALED"):(rank===50?"PERFECT PICK":distance<=4?"SO CLOSE":"ON THE BOARD");
   $("result-title").textContent=noPick?"Time expired before you locked a pick.":bust?"You crossed the line.":mode==="triple"?(running===100?"You hit 100 exactly.":`${100-running} points still on the board.`):(rank===50?"Right on the fifty.":`${distance} spot${distance===1?"":"s"} from perfection.`);
@@ -146,22 +174,26 @@ function setMode(next){
   mode=next;
   document.body.classList.toggle("triple-mode",mode==="triple");
   document.body.classList.toggle("shotclock-mode",mode==="shotclock");
+  document.body.classList.toggle("chaos-mode",mode==="chaos");
   $("classic-mode").classList.toggle("active",mode==="classic");
   $("triple-mode").classList.toggle("active",mode==="triple");
   $("shotclock-mode").classList.toggle("active",mode==="shotclock");
+  $("chaos-mode").classList.toggle("active",mode==="chaos");
   if(rounds.length){tripleChallenge=rounds[Math.floor(Math.random()*rounds.length)];restart();}
 }
 function toast(msg){$("toast").textContent=msg;$("toast").classList.add("show");setTimeout(()=>$("toast").classList.remove("show"),1800);}
 
 $("player-search").addEventListener("input",e=>renderOptions(e.target.value));
 $("player-options").addEventListener("click",e=>{const btn=e.target.closest("[data-name]");if(btn)choosePlayer(btn.dataset.name)});
-$("clear-player").addEventListener("click",()=>{selected=null;$("selected-player").classList.add("hidden");$("lock-pick").disabled=true;$("player-search").focus()});
+$("chaos-options").addEventListener("click",e=>{const card=e.target.closest("[data-chaos-index]");if(card&&!locked)choosePlayer(chaosChoices[Number(card.dataset.chaosIndex)][0])});
+$("clear-player").addEventListener("click",()=>{selected=null;$("selected-player").classList.add("hidden");$("lock-pick").disabled=true;$("chaos-options").querySelectorAll(".selected").forEach(card=>card.classList.remove("selected"));if(mode!=="chaos")$("player-search").focus()});
 $("lock-pick").addEventListener("click",()=>resolvePick(false)); $("next-round").addEventListener("click",nextRound);
 $("play-again").addEventListener("click",restart);
-$("share-score").addEventListener("click",async()=>{const raw=results.reduce((n,r)=>n+(mode==="triple"?r.rank:r.points),0),score=mode==="triple"&&raw>100?0:raw,max=mode==="triple"?100:rounds.length*50;const modeName=mode==="triple"?"Triple Take":mode==="shotclock"?"Shot Clock":"The 50 Line";const text=`I scored ${score}/${max} on ${modeName} 🏀`;try{await navigator.clipboard.writeText(text);toast("SCORE COPIED TO CLIPBOARD")}catch{toast(text)}});
+$("share-score").addEventListener("click",async()=>{const raw=results.reduce((n,r)=>n+(mode==="triple"?r.rank:r.points),0),score=mode==="triple"&&raw>100?0:raw,max=mode==="triple"?100:rounds.length*50;const modeName=mode==="triple"?"Triple Take":mode==="shotclock"?"Shot Clock":mode==="chaos"?"Chaos Mode":"The 50 Line";const text=`I scored ${score}/${max} on ${modeName} 🏀`;try{await navigator.clipboard.writeText(text);toast("SCORE COPIED TO CLIPBOARD")}catch{toast(text)}});
 $("classic-mode").addEventListener("click",()=>setMode("classic"));
 $("triple-mode").addEventListener("click",()=>setMode("triple"));
 $("shotclock-mode").addEventListener("click",()=>setMode("shotclock"));
+$("chaos-mode").addEventListener("click",()=>setMode("chaos"));
 document.addEventListener("click",e=>{if(!e.target.closest(".search-wrap"))$("player-options").classList.remove("open")});
 document.addEventListener("keydown",e=>{if((e.metaKey||e.ctrlKey)&&e.key.toLowerCase()==="k"){e.preventDefault();$("player-search").focus()}});
 function shuffle(items){

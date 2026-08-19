@@ -11,6 +11,7 @@ service cloud.firestore {
         && request.resource.data.createdAt == request.time;
     }
     match /scores_classic/{scoreId} { allow read: if true; allow create: if validScore('classic'); allow update, delete: if false; }
+    match /scores_chaos/{scoreId} { allow read: if true; allow create: if validScore('chaos'); allow update, delete: if false; }
     match /scores_triple/{scoreId} { allow read: if true; allow create: if validScore('triple'); allow update, delete: if false; }
     match /scores_shotclock/{scoreId} { allow read: if true; allow create: if validScore('shotclock'); allow update, delete: if false; }
   }
