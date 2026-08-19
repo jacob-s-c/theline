@@ -1,14 +1,12 @@
-const rounds = [
-  { season:"2023–24", category:"TOTAL POINTS", players:[
-    ["Jayson Tatum","BOS","F",7],["DeMar DeRozan","CHI","F-G",11],["Mikal Bridges","BKN","G-F",18],["Derrick White","BOS","G",42],["Jalen Green","HOU","G",24],["Austin Reaves","LAL","G",47],["Keegan Murray","SAC","F",50],["Josh Hart","NYK","G-F",56],["Chris Paul","GSW","G",91],["Franz Wagner","ORL","F",39],["Jrue Holiday","BOS","G",63],["Naz Reid","MIN","C-F",52]] },
-  { season:"2022–23", category:"TOTAL ASSISTS", players:[
-    ["Trae Young","ATL","G",1],["Nikola Jokic","DEN","C",3],["Jalen Brunson","NYK","G",15],["Jordan Poole","GSW","G",28],["Josh Giddey","OKC","G",11],["Alperen Sengun","HOU","C",46],["Jaylen Brown","BOS","G-F",48],["Bam Adebayo","MIA","C-F",50],["Desmond Bane","MEM","G-F",55],["Brook Lopez","MIL","C",102],["Kyle Kuzma","WAS","F",61],["Marcus Smart","BOS","G",23]] },
-  { season:"2021–22", category:"TOTAL REBOUNDS", players:[
-    ["Nikola Jokic","DEN","C",1],["Rudy Gobert","UTA","C",2],["Julius Randle","NYK","F-C",9],["Kyle Kuzma","WAS","F",25],["Scottie Barnes","TOR","F-G",30],["Andrew Wiggins","GSW","F",49],["Jaren Jackson Jr.","MEM","F-C",50],["Tyler Herro","MIA","G",57],["CJ McCollum","NOP","G",72],["Devin Booker","PHX","G",79],["Robert Williams III","BOS","C-F",38],["Kevin Love","CLE","F-C",45]] },
-  { season:"2020–21", category:"TOTAL 3-POINTERS", players:[
-    ["Stephen Curry","GSW","G",1],["Buddy Hield","SAC","G",2],["Joe Harris","BKN","G-F",7],["Jayson Tatum","BOS","F-G",12],["Lonzo Ball","NOP","G",25],["Dorian Finney-Smith","DAL","F",46],["Bojan Bogdanovic","UTA","F",49],["Jae Crowder","PHX","F",50],["Chris Paul","PHX","G",66],["Ben Simmons","PHI","G-F",190],["Dillon Brooks","MEM","G-F",34],["Kelly Olynyk","HOU","F-C",81]] },
-  { season:"2019–20", category:"TOTAL STEALS", players:[
-    ["James Harden","HOU","G",1],["Ben Simmons","PHI","G-F",2],["Chris Paul","OKC","G",8],["Jayson Tatum","BOS","F-G",14],["Kawhi Leonard","LAC","F",27],["Danny Green","LAL","G-F",43],["Carmelo Anthony","POR","F",48],["Myles Turner","IND","C-F",50],["Zion Williamson","NOP","F",105],["JJ Redick","NOP","G",78],["Jerami Grant","DEN","F",35],["Gordon Hayward","BOS","F",61]] }
+let rounds = [];
+let manifest = [];
+const categories = [
+  ["MIN","TOTAL MINUTES"],["FGM","FIELD GOALS MADE"],["FGA","FIELD GOALS ATTEMPTED"],["FG_PCT","FIELD GOAL %"],
+  ["FG3M","3-POINTERS MADE"],["FG3A","3-POINTERS ATTEMPTED"],["FG3_PCT","3-POINT %"],["FTM","FREE THROWS MADE"],
+  ["FTA","FREE THROWS ATTEMPTED"],["FT_PCT","FREE THROW %"],["OREB","OFFENSIVE REBOUNDS"],["DREB","DEFENSIVE REBOUNDS"],
+  ["REB","TOTAL REBOUNDS"],["AST","TOTAL ASSISTS"],["STL","TOTAL STEALS"],["BLK","TOTAL BLOCKS"],
+  ["TOV","TOTAL TURNOVERS"],["EFF","EFFICIENCY"],["PTS","TOTAL POINTS"],["AST_TO","ASSIST / TURNOVER"],
+  ["STL_TOV","STEAL / TURNOVER"],["PF","PERSONAL FOULS"]
 ];
 
 const $ = (id) => document.getElementById(id);
@@ -17,9 +15,11 @@ let tripleChallenge = rounds[0];
 
 function initials(name){return name.split(/\s+/).map(x=>x[0]).slice(0,2).join("");}
 function allNames(){return [...new Map(rounds.flatMap(r=>r.players).map(p=>[p[0],p])).values()];}
+function playerMeta(player){return [player[1],player[2]].filter(Boolean).join(" • ");}
+function currentChallenge(){return mode==="triple"?tripleChallenge:rounds[roundIndex];}
 
 function renderRound(){
-  const round=mode==="triple"?tripleChallenge:rounds[roundIndex]; selected=null; locked=false;
+  const round=currentChallenge(); selected=null; locked=false;
   const totalSteps=mode==="triple"?3:rounds.length;
   $("round-number").textContent=String(roundIndex+1).padStart(2,"0");
   $("round-total").textContent=`/${String(totalSteps).padStart(2,"0")}`;
@@ -55,23 +55,23 @@ function renderOptions(query=""){
     return;
   }
   const picked=new Set(results.map(r=>r.player));
-  const pool=allNames().filter(p=>p[0].toLowerCase().includes(spelling)&&!picked.has(p[0])).slice(0,8);
-  $("player-options").innerHTML=pool.map((p,i)=>`<button class="player-option" role="option" data-name="${p[0]}"><span class="mini-mono">${initials(p[0])}</span><strong>${p[0]}</strong><span>${p[1]} • ${p[2]}</span></button>`).join("");
+  const pool=currentChallenge().players.filter(p=>p[0].toLowerCase().includes(spelling)&&!picked.has(p[0])).slice(0,8);
+  $("player-options").innerHTML=pool.map(p=>`<button class="player-option" role="option" data-name="${p[0]}"><span class="mini-mono">${initials(p[0])}</span><strong>${p[0]}</strong><span>${playerMeta(p)}</span></button>`).join("");
   $("player-options").classList.toggle("open",pool.length>0);
 }
 
 function choosePlayer(name){
-  const challenge=mode==="triple"?tripleChallenge:rounds[roundIndex];
+  const challenge=currentChallenge();
   const generic=allNames().find(p=>p[0]===name); selected=challenge.players.find(p=>p[0]===name) || generic;
   $("player-search").value=""; $("player-options").classList.remove("open");
   $("player-monogram").textContent=initials(selected[0]); $("player-name").textContent=selected[0];
-  $("player-team").textContent=`${selected[1]} • ${selected[2]}`;
+  $("player-team").textContent=playerMeta(selected);
   $("selected-player").classList.remove("hidden"); $("lock-pick").disabled=false;
 }
 
 function lockPick(){
   if(!selected||locked)return; locked=true;
-  const challenge=mode==="triple"?tripleChallenge:rounds[roundIndex];
+  const challenge=currentChallenge();
   const exact=challenge.players.find(p=>p[0]===selected[0]);
   const rank=exact ? exact[3] : 51 + ((initials(selected[0]).charCodeAt(0)+roundIndex*17)%73);
   const points=mode==="triple"?rank:(rank<=50?rank:0); results.push({round:challenge,player:selected[0],rank,points});
@@ -115,10 +115,10 @@ function showSummary(){
 
 function restart(){roundIndex=0;results=[];$("header-score").textContent="0";$("summary-view").classList.add("hidden");$("game-view").classList.remove("hidden");$("clear-player").classList.remove("hidden");$("next-round").dataset.finish="false";renderRound();}
 function setMode(next){
-  mode=next; tripleChallenge=rounds[Math.floor(Math.random()*rounds.length)];
+  mode=next;
   document.body.classList.toggle("triple-mode",mode==="triple");
   $("classic-mode").classList.toggle("active",mode==="classic"); $("triple-mode").classList.toggle("active",mode==="triple");
-  restart();
+  if(rounds.length){tripleChallenge=rounds[Math.floor(Math.random()*rounds.length)];restart();}
 }
 function toast(msg){$("toast").textContent=msg;$("toast").classList.add("show");setTimeout(()=>$("toast").classList.remove("show"),1800);}
 
@@ -135,4 +135,55 @@ $("how-to-close").addEventListener("click",()=>$("how-to-modal").close());
 $("how-to-play").addEventListener("click",()=>$("how-to-modal").close());
 document.addEventListener("click",e=>{if(!e.target.closest(".search-wrap"))$("player-options").classList.remove("open")});
 document.addEventListener("keydown",e=>{if((e.metaKey||e.ctrlKey)&&e.key.toLowerCase()==="k"){e.preventDefault();$("player-search").focus()}});
-renderRound();
+function shuffle(items){
+  return [...items].sort(()=>Math.random()-.5);
+}
+function makeBoard(season,category){
+  const [key,label]=category;
+  const ranked=season.players.filter(player=>Number.isFinite(player.stats[key])).sort((a,b)=>b.stats[key]-a.stats[key]||a.name.localeCompare(b.name));
+  return {season:season.season,category:label,players:ranked.map((player,index)=>[player.name,player.team,"",index+1])};
+}
+async function startDecade(decade){
+  const available=manifest.filter(item=>Math.floor(item.startYear/10)*10===decade);
+  const pairs=[];
+  while(pairs.length<5){
+    const season=available[Math.floor(Math.random()*available.length)];
+    const category=categories[Math.floor(Math.random()*categories.length)];
+    if(!pairs.some(pair=>pair.season.file===season.file&&pair.category[0]===category[0]))pairs.push({season,category});
+  }
+  $("decade-options").innerHTML=`<button class="decade-button"><strong>LOADING</strong><span>BUILDING YOUR RUN…</span></button>`;
+  try{
+    const seasonFiles=await Promise.all(pairs.map(pair=>fetch(`data/seasons/${pair.season.file}`).then(response=>{if(!response.ok)throw new Error(`HTTP ${response.status}`);return response.json()})));
+    rounds=pairs.map((pair,index)=>makeBoard(seasonFiles[index],pair.category));
+    tripleChallenge=rounds[Math.floor(Math.random()*rounds.length)];
+    $("setup-view").classList.add("hidden"); $("game-view").classList.remove("hidden");
+    restart();
+  }catch(error){console.error("Unable to build run",error);toast("COULD NOT LOAD NBA DATA");renderDecades();}
+}
+function renderDecades(){
+  const decades=[...new Set(manifest.map(item=>Math.floor(item.startYear/10)*10))];
+  $("decade-options").innerHTML=decades.map(decade=>{
+    const seasons=manifest.filter(item=>Math.floor(item.startYear/10)*10===decade);
+    return `<button class="decade-button" data-decade="${decade}"><strong>${decade}s</strong><span>${seasons[0].season} — ${seasons.at(-1).season}</span></button>`;
+  }).join("");
+}
+function showSetup(){
+  rounds=[];results=[];roundIndex=0;$("header-score").textContent="0";
+  $("game-view").classList.add("hidden");$("summary-view").classList.add("hidden");$("setup-view").classList.remove("hidden");renderDecades();
+}
+async function loadData(){
+  try{
+    const response=await fetch("data/manifest.json");
+    if(!response.ok)throw new Error(`HTTP ${response.status}`);
+    manifest=(await response.json()).seasons;
+    renderDecades();
+  }catch(error){
+    console.error("Unable to load leaderboard data",error);
+    $("player-search").placeholder="Leaderboard data could not be loaded";
+    $("player-search").disabled=true;
+    toast("COULD NOT LOAD NBA DATA");
+  }
+}
+$("decade-options").addEventListener("click",event=>{const button=event.target.closest("[data-decade]");if(button)startDecade(Number(button.dataset.decade))});
+$("change-decade").addEventListener("click",showSetup);
+loadData();

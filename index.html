@@ -11,6 +11,7 @@
     <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&family=Oswald:wght@500;600;700&display=swap" rel="stylesheet" />
     <link rel="stylesheet" href="styles.css" />
     <link rel="stylesheet" href="modes.css" />
+    <link rel="stylesheet" href="setup.css" />
   </head>
   <body>
     <div class="grain"></div>
@@ -28,7 +29,17 @@
     </header>
 
     <main>
-      <section id="game-view" class="game-shell">
+      <section id="setup-view" class="setup-view">
+        <p class="eyebrow">CHOOSE YOUR ERA</p>
+        <h1>What decade<br />do you know?</h1>
+        <p class="setup-intro">Your five-round run will pull random seasons and stat categories from the decade you choose.</p>
+        <div id="decade-options" class="decade-options" aria-label="Choose a decade"></div>
+        <div class="category-list">
+          <span>22 POSSIBLE CATEGORIES</span>
+          <p>MIN · FGM · FGA · FG% · 3PM · 3PA · 3P% · FTM · FTA · FT% · OREB · DREB · REB · AST · STL · BLK · TOV · EFF · PTS · AST/TO · STL/TOV · PF</p>
+        </div>
+      </section>
+      <section id="game-view" class="game-shell hidden">
         <div class="round-meta">
           <div>
             <p class="eyebrow">NBA STAT CHALLENGE</p>
@@ -98,6 +109,7 @@
           <button id="play-again" class="primary-button" type="button"><span>RUN IT BACK</span><b>↻</b></button>
           <button id="share-score" class="secondary-button" type="button">SHARE SCORE</button>
         </div>
+        <button id="change-decade" class="text-button" type="button">CHANGE DECADE</button>
       </section>
     </main>
 
@@ -106,6 +118,7 @@
       <p class="eyebrow">THE RULES</p>
       <h2>Get close. Don't cross.</h2>
       <ol>
+        <li><b>Choose your decade.</b><span>Every season in your five-round run comes from the era you select.</span></li>
         <li><b>Read the assignment.</b><span>Each round gives you an NBA season and a totals category.</span></li>
         <li><b>Choose one player.</b><span>Pick the player you think finished closest to 50th in that category.</span></li>
         <li><b>Stay inside the line.</b><span>Ranks 1–50 score their rank. Rank 51+ scores zero.</span></li>

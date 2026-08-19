@@ -21,6 +21,16 @@ Then visit <http://localhost:4173>.
 
 ## Data
 
-The MVP uses a small bundled historical dataset in `app.js`. A production version should replace it with a larger verified dataset or backend stats integration.
+The game uses compact season JSON generated from NBA.com through the open-source `nba_api` client. It includes every regular season from 1979–80 forward and all 22 supported categories. This keeps the deployed game fast and avoids making fragile NBA.com requests from players' browsers.
+
+To refresh the data:
+
+```bash
+python3 -m venv .venv
+.venv/bin/pip install nba_api pandas
+.venv/bin/python scripts/generate_data.py
+```
+
+Commit the updated `data/stats.json` file to publish it.
 
 This is an independent fan project and is not affiliated with the NBA.

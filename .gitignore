@@ -2,3 +2,6 @@
 *.log
 .idea/
 .vscode/
+.venv/
+__pycache__/
+data/stats.json
