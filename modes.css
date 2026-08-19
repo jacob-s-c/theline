@@ -18,6 +18,55 @@
   background: var(--green);
 }
 
+.shotclock-mode .challenge-card {
+  background: linear-gradient(125deg, #f3e2df, #e7cec9);
+}
+
+.shotclock-mode .challenge-copy h2 span {
+  color: var(--red);
+}
+
+.shotclock-mode .stat-ticket {
+  box-shadow: 8px 8px 0 var(--red);
+}
+
+.shotclock-mode .target-chip {
+  border-color: rgba(255, 85, 77, .4);
+}
+
+.shotclock-mode .progress-fill {
+  background: var(--red);
+}
+
+.pick-heading-chips {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  flex-wrap: wrap;
+}
+
+.shot-clock {
+  font: 600 20px Oswald;
+  color: var(--paper);
+  background: #171715;
+  border: 1px solid #3b3934;
+  border-radius: 4px;
+  padding: 6px 14px;
+  min-width: 42px;
+  text-align: center;
+  letter-spacing: 1px;
+}
+
+.shot-clock.urgent {
+  color: var(--red);
+  border-color: var(--red);
+  animation: shotclock-pulse .6s infinite;
+}
+
+@keyframes shotclock-pulse {
+  50% { opacity: .4; }
+}
+
 @media (max-width: 760px) {
   .site-header nav {
     display: flex;

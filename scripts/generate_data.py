@@ -60,8 +60,15 @@ def main() -> None:
         destination = seasons_dir / f"{season_id(start)}.json"
         print(f"Fetching {season_id(start)}...", flush=True)
         payload = fetch_season(start)
+        if not payload["players"]:
+            print(f"  no data returned for {season_id(start)} (stats.nba.com has no totals before 1996-97)", flush=True)
         destination.write_text(json.dumps(payload, separators=(",", ":")) + "\n", encoding="utf-8")
-        manifest.append({"season": payload["season"], "startYear": start, "file": destination.name})
+        manifest.append({
+            "season": payload["season"],
+            "startYear": start,
+            "file": destination.name,
+            "hasData": bool(payload["players"]),
+        })
         time.sleep(0.6)
     (OUTPUT / "manifest.json").write_text(json.dumps({"seasons": manifest}, indent=2) + "\n", encoding="utf-8")
     print(f"Wrote {len(manifest)} seasons to {seasons_dir}")
