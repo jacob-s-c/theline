@@ -93,3 +93,59 @@
     display: none;
   }
 }
+
+.training-mode .challenge-card {
+  background: linear-gradient(125deg, #f5ecd7, #e8dab8);
+}
+
+.training-mode .challenge-copy h2 span {
+  color: #8a6a1a;
+}
+
+.training-mode .target-chip {
+  border-color: rgba(232, 182, 74, .45);
+}
+
+.training-mode .progress-fill {
+  background: #e8b64a;
+}
+
+.training-actions {
+  display: flex;
+  gap: 14px;
+  margin: -10px 0 20px;
+}
+
+.training-season-list {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(110px, 1fr));
+  gap: 8px;
+  max-height: 380px;
+  overflow: auto;
+  margin-bottom: 30px;
+  padding-right: 4px;
+}
+
+.training-season-chip {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  border: 1px solid #3b3934;
+  background: #191917;
+  color: var(--paper);
+  padding: 10px 12px;
+  border-radius: 4px;
+  font: 500 12px Oswald;
+  letter-spacing: .3px;
+  cursor: pointer;
+}
+
+.training-season-chip input {
+  accent-color: var(--orange);
+}
+
+@media (max-width: 760px) {
+  .training-season-list {
+    grid-template-columns: repeat(auto-fill, minmax(90px, 1fr));
+  }
+}

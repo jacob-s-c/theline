@@ -142,13 +142,15 @@ function showSummary(){
 }
 
 function restart(){roundIndex=0;results=[];currentRunSaved=false;$("header-score").textContent="0";$("summary-view").classList.add("hidden");$("game-view").classList.remove("hidden");$("clear-player").classList.remove("hidden");$("next-round").dataset.finish="false";renderRound();}
+function setActiveModeTab(activeId){
+  ["classic-mode","triple-mode","shotclock-mode","training-mode"].forEach(id=>$(id).classList.toggle("active",id===activeId));
+}
 function setMode(next){
   mode=next;
   document.body.classList.toggle("triple-mode",mode==="triple");
   document.body.classList.toggle("shotclock-mode",mode==="shotclock");
-  $("classic-mode").classList.toggle("active",mode==="classic");
-  $("triple-mode").classList.toggle("active",mode==="triple");
-  $("shotclock-mode").classList.toggle("active",mode==="shotclock");
+  document.body.classList.remove("training-mode");
+  setActiveModeTab(`${next}-mode`);
   if(rounds.length){tripleChallenge=rounds[Math.floor(Math.random()*rounds.length)];restart();}
 }
 function toast(msg){$("toast").textContent=msg;$("toast").classList.add("show");setTimeout(()=>$("toast").classList.remove("show"),1800);}
@@ -162,6 +164,10 @@ $("share-score").addEventListener("click",async()=>{const raw=results.reduce((n,
 $("classic-mode").addEventListener("click",()=>setMode("classic"));
 $("triple-mode").addEventListener("click",()=>setMode("triple"));
 $("shotclock-mode").addEventListener("click",()=>setMode("shotclock"));
+$("training-mode").addEventListener("click",showTrainingSetup);
+$("training-select-all").addEventListener("click",()=>{$("training-season-list").querySelectorAll("input").forEach(el=>el.checked=true)});
+$("training-clear-all").addEventListener("click",()=>{$("training-season-list").querySelectorAll("input").forEach(el=>el.checked=false)});
+$("training-start").addEventListener("click",startTraining);
 document.addEventListener("click",e=>{if(!e.target.closest(".search-wrap"))$("player-options").classList.remove("open")});
 document.addEventListener("keydown",e=>{if((e.metaKey||e.ctrlKey)&&e.key.toLowerCase()==="k"){e.preventDefault();$("player-search").focus()}});
 function shuffle(items){
@@ -206,7 +212,42 @@ function renderDecades(){
 function showSetup(){
   clearShotClock();
   rounds=[];results=[];roundIndex=0;$("header-score").textContent="0";
-  $("game-view").classList.add("hidden");$("summary-view").classList.add("hidden");$("setup-view").classList.remove("hidden");renderDecades();
+  $("game-view").classList.add("hidden");$("summary-view").classList.add("hidden");$("training-setup-view").classList.add("hidden");$("setup-view").classList.remove("hidden");renderDecades();
+}
+function renderTrainingSeasons(){
+  const playable=manifest.filter(item=>item.hasData);
+  $("training-season-list").innerHTML=playable.map(item=>`<label class="training-season-chip"><input type="checkbox" value="${item.file}" checked>${item.season}</label>`).join("");
+}
+function showTrainingSetup(){
+  clearShotClock();
+  rounds=[];results=[];roundIndex=0;$("header-score").textContent="0";
+  $("game-view").classList.add("hidden");$("summary-view").classList.add("hidden");$("setup-view").classList.add("hidden");
+  $("training-setup-view").classList.remove("hidden");
+  setActiveModeTab("training-mode");
+  renderTrainingSeasons();
+}
+async function startTraining(){
+  const checked=new Set([...$("training-season-list").querySelectorAll("input:checked")].map(el=>el.value));
+  if(!checked.size){toast("SELECT AT LEAST ONE SEASON");return;}
+  const available=manifest.filter(item=>item.hasData&&checked.has(item.file));
+  const pairs=[];
+  while(pairs.length<6){
+    const season=available[Math.floor(Math.random()*available.length)];
+    const category=categories[Math.floor(Math.random()*categories.length)];
+    if(!pairs.some(pair=>pair.season.file===season.file&&pair.category[0]===category[0]))pairs.push({season,category});
+  }
+  $("training-start").disabled=true; $("training-start").querySelector("span").textContent="BUILDING…";
+  try{
+    const seasonFiles=await Promise.all(pairs.map(pair=>fetch(`data/seasons/${pair.season.file}`).then(response=>{if(!response.ok)throw new Error(`HTTP ${response.status}`);return response.json()})));
+    rounds=pairs.map((pair,index)=>makeBoard(seasonFiles[index],pair.category));
+    mode="classic"; chosenDecade=null;
+    document.body.classList.remove("triple-mode","shotclock-mode");
+    document.body.classList.add("training-mode");
+    setActiveModeTab("training-mode");
+    $("training-setup-view").classList.add("hidden"); $("game-view").classList.remove("hidden");
+    restart();
+  }catch(error){console.error("Unable to build training run",error);toast("COULD NOT LOAD NBA DATA");}
+  finally{$("training-start").disabled=false; $("training-start").querySelector("span").textContent="START TRAINING RUN";}
 }
 async function loadData(){
   try{

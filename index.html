@@ -26,6 +26,7 @@
         <button class="nav-link active" id="classic-mode" type="button">The 50 Line</button>
         <button class="nav-link" id="triple-mode" type="button">Triple Take</button>
         <button class="nav-link" id="shotclock-mode" type="button">Shot Clock</button>
+        <button class="nav-link" id="training-mode" type="button">Training</button>
         <button class="nav-link" id="leaderboard-open" type="button">Leaderboard</button>
         <a class="nav-link" href="how-to.html">How to play</a>
       </nav>
@@ -57,6 +58,17 @@
           <span>22 POSSIBLE CATEGORIES</span>
           <p>MIN · FGM · FGA · FG% · 3PM · 3PA · 3P% · FTM · FTA · FT% · OREB · DREB · REB · AST · STL · BLK · TOV · EFF · PTS · AST/TO · STL/TOV · PF</p>
         </div>
+      </section>
+      <section id="training-setup-view" class="setup-view hidden">
+        <p class="eyebrow">TRAINING MODE</p>
+        <h1>Pick your<br />seasons.</h1>
+        <p class="setup-intro">Check any seasons you want in the pool. Your six-round run pulls random seasons and stat categories only from what you select.</p>
+        <div class="training-actions">
+          <button id="training-select-all" class="text-button" type="button">SELECT ALL</button>
+          <button id="training-clear-all" class="text-button" type="button">CLEAR ALL</button>
+        </div>
+        <div id="training-season-list" class="training-season-list" aria-label="Choose seasons"></div>
+        <button id="training-start" class="primary-button" type="button"><span>START TRAINING RUN</span><b>→</b></button>
       </section>
       <section id="game-view" class="game-shell hidden">
         <div class="round-meta">
