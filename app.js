@@ -1,5 +1,6 @@
 let rounds = [];
 let manifest = [];
+let chosenDecade = null, currentRunSaved = false;
 const categories = [
   ["MIN","TOTAL MINUTES"],["FGM","FIELD GOALS MADE"],["FGA","FIELD GOALS ATTEMPTED"],["FG_PCT","FIELD GOAL %"],
   ["FG3M","3-POINTERS MADE"],["FG3A","3-POINTERS ATTEMPTED"],["FG3_PCT","3-POINT %"],["FTM","FREE THROWS MADE"],
@@ -110,10 +111,14 @@ function showSummary(){
   $("final-verdict").textContent=mode==="triple"?(tripleBust?`Your picks totaled ${rankTotal}. You crossed the line.`:total===100?"Perfect. Three picks, 100 on the nose.":`${100-total} points shy of the target. Run it back with what you learned.`):(total>=220?"Elite hoops recall. You practically live at the scorer's table.":total>=150?"A strong run — you know the league, and you respect the line.":total>=75?"Solid instincts. A few deep cuts caught you reaching.":"The line got you today. Film room, then run it back.");
   $("summary-rounds").style.gridTemplateColumns=`repeat(${results.length},1fr)`;
   $("summary-rounds").innerHTML=results.map((r,i)=>`<div class="summary-round"><span>${mode==="triple"?"PICK":"ROUND"} ${i+1}</span><strong>${mode==="triple"?`#${r.rank}`:r.points}</strong><small>${r.player}<br>${r.round.category}</small></div>`).join("");
+  if(!currentRunSaved){
+    currentRunSaved=true;
+    window.dispatchEvent(new CustomEvent("theline:run-complete",{detail:{mode,score:total,decade:chosenDecade,picks:results.map(r=>({player:r.player,rank:r.rank,season:r.round.season,category:r.round.category}))}}));
+  }
   window.scrollTo({top:0,behavior:"smooth"});
 }
 
-function restart(){roundIndex=0;results=[];$("header-score").textContent="0";$("summary-view").classList.add("hidden");$("game-view").classList.remove("hidden");$("clear-player").classList.remove("hidden");$("next-round").dataset.finish="false";renderRound();}
+function restart(){roundIndex=0;results=[];currentRunSaved=false;$("header-score").textContent="0";$("summary-view").classList.add("hidden");$("game-view").classList.remove("hidden");$("clear-player").classList.remove("hidden");$("next-round").dataset.finish="false";renderRound();}
 function setMode(next){
   mode=next;
   document.body.classList.toggle("triple-mode",mode==="triple");
@@ -144,6 +149,7 @@ function makeBoard(season,category){
   return {season:season.season,category:label,players:ranked.map((player,index)=>[player.name,player.team,"",index+1])};
 }
 async function startDecade(decade){
+  chosenDecade=decade;
   const available=manifest.filter(item=>Math.floor(item.startYear/10)*10===decade);
   const pairs=[];
   while(pairs.length<5){

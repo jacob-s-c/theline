@@ -31,6 +31,12 @@ python3 -m venv .venv
 .venv/bin/python scripts/generate_data.py
 ```
 
-Commit the updated `data/stats.json` file to publish it.
+Commit the updated `data/manifest.json` and `data/seasons/` files to publish it.
+
+## Accounts and leaderboards
+
+Google sign-in uses Firebase Authentication. Player run history and the two public leaderboards use Cloud Firestore. Enable Firestore in the Firebase console, then publish the rules from `firestore.rules` before accepting scores.
+
+The leaderboard is intended for a casual game. Because gameplay runs entirely in the browser, determined users can forge scores; authoritative anti-cheat validation would require a trusted backend.
 
 This is an independent fan project and is not affiliated with the NBA.
