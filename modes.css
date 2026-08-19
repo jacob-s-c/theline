@@ -110,10 +110,32 @@
   background: #e8b64a;
 }
 
+.training-header {
+  display: flex;
+  align-items: center;
+  gap: 22px;
+  margin-bottom: 6px;
+}
+
+.training-icon {
+  width: 72px;
+  height: 27px;
+  flex-shrink: 0;
+  filter: drop-shadow(0 4px 8px rgba(232, 182, 74, .3));
+}
+
 .training-actions {
   display: flex;
+  align-items: center;
   gap: 14px;
   margin: -10px 0 20px;
+}
+
+.training-count {
+  font: 700 10px "DM Sans";
+  letter-spacing: 1.5px;
+  color: #e8b64a;
+  margin-left: auto;
 }
 
 .training-season-list {
@@ -138,10 +160,17 @@
   font: 500 12px Oswald;
   letter-spacing: .3px;
   cursor: pointer;
+  transition: .15s;
+}
+
+.training-season-chip:has(input:checked) {
+  border-color: #e8b64a;
+  background: #262010;
+  color: #e8b64a;
 }
 
 .training-season-chip input {
-  accent-color: var(--orange);
+  accent-color: #e8b64a;
 }
 
 @media (max-width: 760px) {

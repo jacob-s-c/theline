@@ -196,8 +196,9 @@ $("triple-mode").addEventListener("click",()=>setMode("triple"));
 $("shotclock-mode").addEventListener("click",()=>setMode("shotclock"));
 $("chaos-mode").addEventListener("click",()=>setMode("chaos"));
 $("training-mode").addEventListener("click",showTrainingSetup);
-$("training-select-all").addEventListener("click",()=>{$("training-season-list").querySelectorAll("input").forEach(el=>el.checked=true)});
-$("training-clear-all").addEventListener("click",()=>{$("training-season-list").querySelectorAll("input").forEach(el=>el.checked=false)});
+$("training-select-all").addEventListener("click",()=>{$("training-season-list").querySelectorAll("input").forEach(el=>el.checked=true);updateTrainingCount();});
+$("training-clear-all").addEventListener("click",()=>{$("training-season-list").querySelectorAll("input").forEach(el=>el.checked=false);updateTrainingCount();});
+$("training-season-list").addEventListener("change",updateTrainingCount);
 $("training-start").addEventListener("click",startTraining);
 document.addEventListener("click",e=>{if(!e.target.closest(".search-wrap"))$("player-options").classList.remove("open")});
 document.addEventListener("keydown",e=>{if((e.metaKey||e.ctrlKey)&&e.key.toLowerCase()==="k"){e.preventDefault();$("player-search").focus()}});
@@ -245,9 +246,14 @@ function showSetup(){
   rounds=[];results=[];roundIndex=0;$("header-score").textContent="0";
   $("game-view").classList.add("hidden");$("summary-view").classList.add("hidden");$("training-setup-view").classList.add("hidden");$("setup-view").classList.remove("hidden");renderDecades();
 }
+function updateTrainingCount(){
+  const count=$("training-season-list").querySelectorAll("input:checked").length;
+  $("training-count").textContent=`${count} SELECTED`;
+}
 function renderTrainingSeasons(){
   const playable=manifest.filter(item=>item.hasData);
-  $("training-season-list").innerHTML=playable.map(item=>`<label class="training-season-chip"><input type="checkbox" value="${item.file}" checked>${item.season}</label>`).join("");
+  $("training-season-list").innerHTML=playable.map(item=>`<label class="training-season-chip"><input type="checkbox" value="${item.file}">${item.season}</label>`).join("");
+  updateTrainingCount();
 }
 function showTrainingSetup(){
   clearShotClock();

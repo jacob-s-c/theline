@@ -62,12 +62,21 @@
         </div>
       </section>
       <section id="training-setup-view" class="setup-view hidden">
-        <p class="eyebrow">TRAINING MODE</p>
-        <h1>Pick your<br />seasons.</h1>
-        <p class="setup-intro">Check any seasons you want in the pool. Your six-round run pulls random seasons and stat categories only from what you select.</p>
+        <div class="training-header">
+          <svg class="training-icon" viewBox="0 0 64 24" aria-hidden="true">
+            <rect x="0" y="4" width="8" height="16" rx="2" fill="#e8b64a"/>
+            <rect x="6" y="8" width="4" height="8" rx="1" fill="#e8b64a"/>
+            <rect x="10" y="10" width="44" height="4" rx="2" fill="#e8b64a"/>
+            <rect x="54" y="8" width="4" height="8" rx="1" fill="#e8b64a"/>
+            <rect x="56" y="4" width="8" height="16" rx="2" fill="#e8b64a"/>
+          </svg>
+          <div><p class="eyebrow">TRAINING MODE</p><h1>Pick your<br />seasons.</h1></div>
+        </div>
+        <p class="setup-intro">Check the seasons you want in the pool. Your six-round run pulls random seasons and stat categories only from what you select.</p>
         <div class="training-actions">
           <button id="training-select-all" class="text-button" type="button">SELECT ALL</button>
           <button id="training-clear-all" class="text-button" type="button">CLEAR ALL</button>
+          <span class="training-count" id="training-count">0 SELECTED</span>
         </div>
         <div id="training-season-list" class="training-season-list" aria-label="Choose seasons"></div>
         <button id="training-start" class="primary-button" type="button"><span>START TRAINING RUN</span><b>→</b></button>
