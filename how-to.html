@@ -1,0 +1,66 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <meta name="theme-color" content="#11100e" />
+  <title>How to Play — The 50 Line</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&family=Oswald:wght@500;600;700&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="styles.css" />
+  <link rel="stylesheet" href="how-to.css" />
+</head>
+<body class="docs-page">
+  <div class="grain"></div>
+  <header class="site-header">
+    <a class="brand" href="index.html"><span class="brand-ball">50</span><span>THE <b>LINE</b></span></a>
+    <nav aria-label="Documentation navigation"><a class="nav-link" href="index.html">Play</a><a class="nav-link active" href="how-to.html">How to play</a></nav>
+    <a class="docs-play" href="index.html">PLAY NOW <span>→</span></a>
+  </header>
+
+  <main class="docs-shell">
+    <aside class="docs-nav">
+      <span>ON THIS PAGE</span>
+      <a href="#overview">Overview</a><a href="#classic">The 50 Line</a><a href="#triple">Triple Take</a><a href="#shotclock">Shot Clock</a><a href="#categories">Stat categories</a><a href="#data">Our data</a><a href="#rankings">Ranking details</a>
+    </aside>
+    <article>
+      <section id="overview" class="docs-hero">
+        <p class="eyebrow">PLAY GUIDE</p>
+        <h1>Get close.<br /><em>Don't cross.</em></h1>
+        <p>The 50 Line is a basketball memory game built around NBA regular-season leaderboards. Choose an era, read the assignment, and trust your knowledge of the league.</p>
+      </section>
+
+      <section class="docs-section">
+        <p class="section-number">01</p><div><h2>Start with an era.</h2><p>Choose a decade from the 1980s through the 2020s. A run uses seasons whose starting year falls inside that decade. Choosing the 2010s, for example, includes 2010–11 through 2019–20.</p><div class="callout">Every standard run contains eight randomized season-and-category assignments.</div></div>
+      </section>
+
+      <section id="classic" class="docs-section">
+        <p class="section-number">02</p><div><p class="eyebrow">MODE ONE</p><h2>The 50 Line</h2><p>Choose one player for each assignment. Your goal is to select the player ranked closest to 50th without going beyond it.</p><div class="rule-grid"><div><strong>#50</strong><span>Perfect pick<br />50 points</span></div><div><strong>#1–49</strong><span>Score equals<br />the player's rank</span></div><div class="danger"><strong>#51+</strong><span>Bust<br />0 points</span></div></div><p>Eight rounds create a maximum possible score of 400.</p></div>
+      </section>
+
+      <section id="triple" class="docs-section">
+        <p class="section-number">03</p><div><p class="eyebrow">MODE TWO</p><h2>Triple Take</h2><p>You receive one season and category, then make three unique player picks. Each rank is revealed immediately, letting you recalibrate before your next selection.</p><div class="formula"><span>PLAYER 1 RANK</span><b>+</b><span>PLAYER 2 RANK</span><b>+</b><span>PLAYER 3 RANK</span><b>=</b><strong>100</strong></div><p>Get as close to 100 as possible. Exactly 100 is perfect; crossing 100 busts the entire run for zero.</p></div>
+      </section>
+
+      <section id="shotclock" class="docs-section">
+        <p class="section-number">04</p><div><p class="eyebrow">MODE THREE</p><h2>Shot Clock</h2><p>The 50 Line rules, under pressure. You have 24 seconds to search for and lock in one player on every assignment. If the clock reaches zero, the pick is an automatic miss worth zero.</p><div class="callout">Eight rounds. Twenty-four seconds per pick. No extensions.</div></div>
+      </section>
+
+      <section id="categories" class="docs-section">
+        <p class="section-number">04</p><div><h2>Stat categories</h2><p>All challenges use regular-season player statistics. Counting stats use season totals; percentage and ratio categories use their calculated rate.</p><div class="stat-grid"><span>MIN</span><span>FGM</span><span>FGA</span><span>FG%</span><span>3PM</span><span>3PA</span><span>3P%</span><span>FTM</span><span>FTA</span><span>FT%</span><span>OREB</span><span>DREB</span><span>REB</span><span>AST</span><span>STL</span><span>BLK</span><span>TOV</span><span>EFF</span><span>PTS</span><span>AST/TO</span><span>STL/TOV</span><span>PF</span></div><p class="fine-print"><b>EFF</b> = PTS + REB + AST + STL + BLK − missed field goals − missed free throws − TOV. Ratio categories exclude players with zero turnovers because the ratio is undefined.</p></div>
+      </section>
+
+      <section id="data" class="docs-section data-section">
+        <p class="section-number">05</p><div><p class="eyebrow">DATA & METHODOLOGY</p><h2>Where the numbers come from</h2><p>Our source statistics come from <a href="https://www.nba.com/stats/players/traditional" target="_blank" rel="noopener">NBA.com Stats</a>. We retrieve them with the open-source <a href="https://github.com/swar/nba_api" target="_blank" rel="noopener">nba_api Python client</a>, then generate compact season files stored with the website.</p><div class="data-flow"><div><span>01</span><strong>NBA.com</strong><small>Official historical stats</small></div><b>→</b><div><span>02</span><strong>nba_api</strong><small>Retrieval and parsing</small></div><b>→</b><div><span>03</span><strong>Static JSON</strong><small>Fast cached gameplay</small></div></div><p>The browser never requests NBA.com during a game. Cached data makes play faster and keeps the site working when the upstream API is slow or temporarily unavailable. The dataset currently covers 1980–81 through 2025–26 and can be regenerated as new seasons become available.</p><p class="fine-print">The 1980–81 starting point ensures every category used by the game exists across the supported range. This is an independent fan project and is not affiliated with or endorsed by the NBA.</p></div>
+      </section>
+
+      <section id="rankings" class="docs-section">
+        <p class="section-number">06</p><div><h2>How rankings work</h2><p>Players are sorted from the highest value to the lowest within the assigned season and category. If two players have the same value, names are sorted alphabetically to produce a stable order. The rank represents position in that complete ordered list.</p><p>Percentage categories currently include every player with a recorded value; the game does not apply NBA award-qualification minimums. This makes the rule consistent across every historical season, though low-volume players can rank unusually high in percentage categories.</p></div>
+      </section>
+
+      <footer class="docs-footer"><p>Ready to test your hoops memory?</p><a class="primary-button" href="index.html"><span>START A RUN</span><b>→</b></a></footer>
+    </article>
+  </main>
+</body>
+</html>
