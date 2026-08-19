@@ -162,9 +162,6 @@ $("share-score").addEventListener("click",async()=>{const raw=results.reduce((n,
 $("classic-mode").addEventListener("click",()=>setMode("classic"));
 $("triple-mode").addEventListener("click",()=>setMode("triple"));
 $("shotclock-mode").addEventListener("click",()=>setMode("shotclock"));
-$("how-to-open").addEventListener("click",()=>$("how-to-modal").showModal());
-$("how-to-close").addEventListener("click",()=>$("how-to-modal").close());
-$("how-to-play").addEventListener("click",()=>$("how-to-modal").close());
 document.addEventListener("click",e=>{if(!e.target.closest(".search-wrap"))$("player-options").classList.remove("open")});
 document.addEventListener("keydown",e=>{if((e.metaKey||e.ctrlKey)&&e.key.toLowerCase()==="k"){e.preventDefault();$("player-search").focus()}});
 function shuffle(items){
