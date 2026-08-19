@@ -109,13 +109,14 @@ async function loadProfile() {
     return [...snapshot.docs].map(doc=>({...doc.data(),mode}));
   };
   try{
-    const [classic,triple,shotclock]=await Promise.all([getRuns("classic"),getRuns("triple"),getRuns("shotclock")]);
-    const all=[...classic,...triple,...shotclock].sort((a,b)=>(b.createdAt?.seconds||0)-(a.createdAt?.seconds||0));
+    const [classic,chaos,triple,shotclock]=await Promise.all([getRuns("classic"),getRuns("chaos"),getRuns("triple"),getRuns("shotclock")]);
+    const all=[...classic,...chaos,...triple,...shotclock].sort((a,b)=>(b.createdAt?.seconds||0)-(a.createdAt?.seconds||0));
     document.getElementById("profile-runs").textContent=all.length;
     document.getElementById("profile-classic-best").textContent=classic.length?Math.max(...classic.map(run=>run.score)):"—";
+    document.getElementById("profile-chaos-best").textContent=chaos.length?Math.max(...chaos.map(run=>run.score)):"—";
     document.getElementById("profile-triple-best").textContent=triple.length?Math.max(...triple.map(run=>run.score)):"—";
     document.getElementById("profile-shotclock-best").textContent=shotclock.length?Math.max(...shotclock.map(run=>run.score)):"—";
-    document.getElementById("recent-runs").innerHTML=all.length?all.slice(0,8).map(run=>`<div class="recent-run"><strong>${run.mode==="classic"?"THE 50 LINE":run.mode==="triple"?"TRIPLE TAKE":"SHOT CLOCK"}</strong><span>${run.decade ? `${run.decade}s` : ""}</span><b>${run.score}</b></div>`).join(""):'<p class="empty-state">Finish a run to start your history.</p>';
+    document.getElementById("recent-runs").innerHTML=all.length?all.slice(0,8).map(run=>`<div class="recent-run"><strong>${run.mode==="classic"?"THE 50 LINE":run.mode==="chaos"?"CHAOS":run.mode==="triple"?"TRIPLE TAKE":"SHOT CLOCK"}</strong><span>${run.decade ? `${run.decade}s` : ""}</span><b>${run.score}</b></div>`).join(""):'<p class="empty-state">Finish a run to start your history.</p>';
   }catch(error){console.error("Profile load failed",error);document.getElementById("recent-runs").innerHTML='<p class="empty-state">Stats unavailable. Firestore may still need to be enabled.</p>';}
 }
 function showCommunity(panel="leaderboard") {

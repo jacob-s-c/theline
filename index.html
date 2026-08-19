@@ -14,6 +14,7 @@
     <link rel="stylesheet" href="setup.css" />
     <link rel="stylesheet" href="auth.css" />
     <link rel="stylesheet" href="community.css" />
+    <link rel="stylesheet" href="chaos.css" />
   </head>
   <body>
     <div class="grain"></div>
@@ -24,6 +25,7 @@
       </a>
       <nav aria-label="Main navigation">
         <button class="nav-link active" id="classic-mode" type="button">The 50 Line</button>
+        <button class="nav-link" id="chaos-mode" type="button">Chaos</button>
         <button class="nav-link" id="triple-mode" type="button">Triple Take</button>
         <button class="nav-link" id="shotclock-mode" type="button">Shot Clock</button>
         <button class="nav-link" id="training-mode" type="button">Training</button>
@@ -110,7 +112,8 @@
             </div>
           </div>
 
-          <div class="search-wrap">
+          <div id="chaos-options" class="chaos-options hidden" role="listbox" aria-label="Chaos player choices"></div>
+          <div class="search-wrap" id="search-wrap">
             <svg aria-hidden="true" viewBox="0 0 24 24"><path d="m21 21-4.35-4.35m2.35-5.15a7.5 7.5 0 1 1-15 0 7.5 7.5 0 0 1 15 0Z"/></svg>
             <input id="player-search" type="search" autocomplete="off" placeholder="Search NBA players…" aria-label="Search NBA players" />
             <kbd>⌘ K</kbd>
@@ -156,14 +159,14 @@
       <div class="community-tabs"><button class="active" id="leaderboard-tab" type="button">LEADERBOARD</button><button id="profile-tab" type="button">MY PROFILE</button></div>
       <section id="leaderboard-panel">
         <p class="eyebrow">THE BEST RUNS</p><h2>Top of the line.</h2>
-        <div class="board-switch"><button class="active" data-board="classic">THE 50 LINE</button><button data-board="triple">TRIPLE TAKE</button><button data-board="shotclock">SHOT CLOCK</button></div>
+        <div class="board-switch"><button class="active" data-board="classic">THE 50 LINE</button><button data-board="chaos">CHAOS</button><button data-board="triple">TRIPLE TAKE</button><button data-board="shotclock">SHOT CLOCK</button></div>
         <div id="leaderboard-list" class="leaderboard-list"><p class="empty-state">Loading leaderboard…</p></div>
       </section>
       <section id="profile-panel" class="hidden">
         <div id="profile-guest" class="profile-guest"><p class="eyebrow">PLAYER PROFILE</p><h2>Sign in to track your game.</h2><p>Your best scores and run history will follow you across devices.</p><button id="profile-sign-in" class="primary-button" type="button"><span>SIGN IN WITH GOOGLE</span><b>→</b></button></div>
         <div id="profile-content" class="hidden">
           <div class="profile-identity"><img id="profile-avatar" alt="" referrerpolicy="no-referrer"/><div><p class="eyebrow">PLAYER PROFILE</p><h2 id="profile-name"></h2><span id="profile-email"></span></div></div>
-          <div class="profile-stats"><div><span>RUNS PLAYED</span><strong id="profile-runs">0</strong></div><div><span>50 LINE BEST</span><strong id="profile-classic-best">—</strong></div><div><span>TRIPLE BEST</span><strong id="profile-triple-best">—</strong></div><div><span>SHOT CLOCK BEST</span><strong id="profile-shotclock-best">—</strong></div></div>
+          <div class="profile-stats"><div><span>RUNS PLAYED</span><strong id="profile-runs">0</strong></div><div><span>50 LINE BEST</span><strong id="profile-classic-best">—</strong></div><div><span>CHAOS BEST</span><strong id="profile-chaos-best">—</strong></div><div><span>TRIPLE BEST</span><strong id="profile-triple-best">—</strong></div><div><span>SHOT CLOCK BEST</span><strong id="profile-shotclock-best">—</strong></div></div>
           <p class="section-label">RECENT RUNS</p><div id="recent-runs" class="recent-runs"></div>
         </div>
       </section>
